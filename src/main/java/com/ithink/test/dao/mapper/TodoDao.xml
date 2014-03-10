@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.ithink.test.dao.TodoDao">
+	<select id="getTodoList" resultType="com.ithink.test.vo.Todo">
+		SELECT * FROM TODO ORDER BY SUCCESS DESC, REGDATE DESC
+	</select>
+  
+  	<insert id="insert"  parameterType="com.ithink.test.vo.Todo">
+  		<selectKey keyProperty="seq" order="BEFORE" resultType="String">
+  			SELECT MAX(TO_NUMBER(NVL(SEQ, '1')))+1 FROM TODO
+  		</selectKey>
+  		INSERT INTO TODO
+  		(SEQ, TITLE, CONTENT, SUCCESS, REGDATE, DUEDAY)
+  		VALUES(#{seq}, #{title}, #{content}, 'YET', SYSDATE, #{dueday, jdbcType=TIMESTAMP})
+  	</insert>
+  	
+  	<update id="update">
+  		UPDATE TODO SET SUCCESS ='DONE', SUCCDAY=SYSDATE WHERE SEQ =#{seq}
+  	</update>
+  	
+  	<select id="getCount" resultType="Integer">
+		 SELECT COUNT(SEQ) C FROM TODO WHERE SUCCESS='YET'
+  	</select>
+  	
+  	<delete id="delete">
+  		DELETE FROM TODO WHERE SEQ = #{seq}
+  	</delete>
+</mapper>
